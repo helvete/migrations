@@ -4,7 +4,7 @@
  * This file is part of the Nextras community extensions of Nette Framework
  *
  * @license    New BSD License
- * @link       https://github.com/nextras/migrations
+ * @link	   https://github.com/nextras/migrations
  */
 
 namespace Nextras\Migrations\Drivers;
@@ -51,10 +51,10 @@ abstract class BaseDriver implements IDriver
 	/**
 	 * Loads and executes SQL queries from given file. Taken from Adminer (Apache License), modified.
 	 *
-	 * @author   Jakub Vrána
-	 * @author   Jan Tvrdík
-	 * @author   Michael Moravec
-	 * @author   Jan Skrasek
+	 * @author	 Jakub Vrána
+	 * @author	 Jan Tvrdík
+	 * @author	 Michael Moravec
+	 * @author	 Jan Skrasek
 	 * @license  Apache License
 	 *
 	 * @param  string $path
@@ -62,7 +62,7 @@ abstract class BaseDriver implements IDriver
 	 */
 	public function loadFile($path)
 	{
-		$content = @file_get_contents($path);
+		$content = $this->getFile($path);
 		if ($content === FALSE) {
 			throw new IOException("Cannot open file '$path'.");
 		}
@@ -137,4 +137,15 @@ abstract class BaseDriver implements IDriver
 		return $queries;
 	}
 
+
+	/**
+	 * Get file contents from a given path
+	 *
+	 * @param  string	$path
+	 * @return string
+	 */
+	protected function getFile($path)
+	{
+		return @file_get_contents($path);
+	}
 }

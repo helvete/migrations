@@ -4,7 +4,7 @@
  * This file is part of the Nextras community extensions of Nette Framework
  *
  * @license    New BSD License
- * @link       https://github.com/nextras/migrations
+ * @link	   https://github.com/nextras/migrations
  */
 
 namespace Nextras\Migrations\Drivers;
@@ -23,22 +23,35 @@ use Nextras\Migrations\LockException;
  */
 class PgSqlDriver extends BaseDriver implements IDriver
 {
+	const SETROLE_QUERY_TPL = "SET ROLE %s;\n";
+
 	/** @var string */
 	protected $schema;
 
 	/** @var NULL|string */
 	protected $schemaQuoted;
 
+	/** @var string */
+	protected $effectiveRole;
+
 
 	/**
+	 * Class construct
+	 *
 	 * @param IDbal  $dbal
 	 * @param string $tableName
 	 * @param string $schema
+	 * @param string $effectiveRole
 	 */
-	public function __construct(IDbal $dbal, $tableName = 'migrations', $schema = 'public')
-	{
+	public function __construct(
+		IDbal $dbal,
+		$tableName = 'migrations',
+		$schema = 'public',
+		$effectiveRole = null
+	) {
 		parent::__construct($dbal, $tableName);
 		$this->schema = $schema;
+		$this->effectiveRole = $effectiveRole;
 	}
 
 
@@ -199,4 +212,19 @@ class PgSqlDriver extends BaseDriver implements IDriver
 		return $out;
 	}
 
+
+	/**
+	 * Get file contents from a given path
+	 *
+	 * @param  string	$path
+	 * @return string
+	 */
+	protected function getFile($path)
+	{
+		$content = @file_get_contents($path);
+		if ($content === false || $this->effectiveRole === null) {
+			return $content;
+		}
+		return sprintf(static::SETROLE_QUERY_TPL, $this->effectiveRole) . $content;
+	}
 }
