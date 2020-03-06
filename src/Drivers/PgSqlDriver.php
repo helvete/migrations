@@ -225,6 +225,6 @@ class PgSqlDriver extends BaseDriver implements IDriver
         if ($content === false || $this->effectiveRole === null) {
             return $content;
         }
-        return sprintf(static::SETROLE_QUERY_TPL, $this->effectiveRole) + $content;
+        return sprintf(static::SETROLE_QUERY_TPL, $this->effectiveRole) . $content;
     }
 }
