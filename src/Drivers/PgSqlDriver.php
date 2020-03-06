@@ -41,12 +41,13 @@ class PgSqlDriver extends BaseDriver implements IDriver
      * @param IDbal  $dbal
      * @param string $tableName
      * @param string $schema
+     * @param string $effectiveRole
      */
     public function __construct(
         IDbal $dbal,
         $tableName = 'migrations',
         $schema = 'public',
-        $effectiveRole
+        $effectiveRole = null
     ) {
 		parent::__construct($dbal, $tableName);
 		$this->schema = $schema;
@@ -221,9 +222,9 @@ class PgSqlDriver extends BaseDriver implements IDriver
     protected function getFile($path)
     {
 		$content = @file_get_contents($path);
-        if ($content === false || $effectiveRole === null) {
+        if ($content === false || $this->effectiveRole === null) {
             return $content;
         }
-        return sprintf(static::SETROLE_QUERY_TPL, $effectiveRole) + $content;
+        return sprintf(static::SETROLE_QUERY_TPL, $this->effectiveRole) + $content;
     }
 }
