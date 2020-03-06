@@ -23,23 +23,35 @@ use Nextras\Migrations\LockException;
  */
 class PgSqlDriver extends BaseDriver implements IDriver
 {
+    const SETROLE_QUERY_TPL = "SET ROLE %s;\n";
+
 	/** @var string */
 	protected $schema;
 
 	/** @var NULL|string */
 	protected $schemaQuoted;
 
+    /** @var string */
+    protected $effectiveRole;
 
-	/**
-	 * @param IDbal  $dbal
-	 * @param string $tableName
-	 * @param string $schema
-	 */
-	public function __construct(IDbal $dbal, $tableName = 'migrations', $schema = 'public')
-	{
+
+    /**
+     * Class construct
+     *
+     * @param IDbal  $dbal
+     * @param string $tableName
+     * @param string $schema
+     */
+    public function __construct(
+        IDbal $dbal,
+        $tableName = 'migrations',
+        $schema = 'public',
+        $effectiveRole
+    ) {
 		parent::__construct($dbal, $tableName);
 		$this->schema = $schema;
-	}
+        $this->effectiveRole = $effectiveRole;
+    }
 
 
 	public function setupConnection()
@@ -199,4 +211,19 @@ class PgSqlDriver extends BaseDriver implements IDriver
 		return $out;
 	}
 
+
+    /**
+     * Get file contents from a given path
+     *
+     * @param  string   $path
+     * @return string
+     */
+    protected function getFile($path)
+    {
+		$content = @file_get_contents($path);
+        if ($content === false || $effectiveRole === null) {
+            return $content;
+        }
+        return sprintf(static::SETROLE_QUERY_TPL, $effectiveRole) + $content;
+    }
 }

@@ -62,7 +62,7 @@ abstract class BaseDriver implements IDriver
 	 */
 	public function loadFile($path)
 	{
-		$content = @file_get_contents($path);
+        $content = $this->getFile($path);
 		if ($content === FALSE) {
 			throw new IOException("Cannot open file '$path'.");
 		}
@@ -137,4 +137,15 @@ abstract class BaseDriver implements IDriver
 		return $queries;
 	}
 
+
+    /**
+     * Get file contents from a given path
+     *
+     * @param  string   $path
+     * @return string
+     */
+    protected function getFile($path)
+    {
+		return @file_get_contents($path);
+    }
 }
