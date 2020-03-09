@@ -33,6 +33,7 @@ class MigrationsExtension extends Nette\DI\CompilerExtension
 		'diffGenerator' => TRUE, // false|doctrine
 		'withDummyData' => FALSE,
 		'ignoredQueriesFile' => NULL,
+		'allowOutOfOrder' => false,
 	];
 
 	/** @var array */
@@ -264,6 +265,9 @@ class MigrationsExtension extends Nette\DI\CompilerExtension
 			$directory = $groupConfig['directory'];
 			$dependencies = isset($groupConfig['dependencies']) ? $groupConfig['dependencies'] : [];
 			$generator = isset($groupConfig['generator']) ? $groupConfig['generator'] : null;
+			$allowOutOfOrder = isset($groupConfig['allowOutOfOrder'])
+				? $groupConfig['allowOutOfOrder']
+				: $this->defaults['allowOutOfOrder'];
 
 			$serviceName = lcfirst(str_replace('-', '', ucwords($groupName, '-')));
 			$groupDefinitions[] = $builder->addDefinition($this->prefix("group.$serviceName"))
@@ -274,7 +278,8 @@ class MigrationsExtension extends Nette\DI\CompilerExtension
 				->addSetup('$enabled', [$enabled])
 				->addSetup('$directory', [$directory])
 				->addSetup('$dependencies', [$dependencies])
-				->addSetup('$generator', [$generator]);
+				->addSetup('$generator', [$generator])
+				->addSetup('$allowOutOfOrder', [$allowOutOfOrder]);
 		}
 
 		return $groupDefinitions;

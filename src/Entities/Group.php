@@ -32,4 +32,6 @@ class Group
 	/** @var IDiffGenerator|NULL */
 	public $generator;
 
+	/** @var bool */
+	public $allowOutOfOrder = false;
 }

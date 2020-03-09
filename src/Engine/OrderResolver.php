@@ -87,6 +87,9 @@ class OrderResolver
 			if (!isset($lastMigrations[$group->name])) {
 				continue;
 			}
+			if ($group->allowOutOfOrder) {
+				continue;
+			}
 
 			foreach ($this->getFirstFiles($files) as $file) {
 				if (strcmp($file->name, $lastMigrations[$group->name]) >= 0) {
