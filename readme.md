@@ -25,3 +25,9 @@ License
 *Based on [Clevis\Migration](https://github.com/Clevis/Migration) by Petr Procházka and further improved.*
 
 New BSD License. See full [license](license.md).
+
+Differences over Nextras
+-------
+
+1. Allow to set effective role under which the migrations are run against the database. This change is essential to support postgres group ACL mode.
+1. Allow out-of-order migrations execution. This alteration is useful in case of many environments having various branch lifetime while vast majority of migrations is simply additive.
